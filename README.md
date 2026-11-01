@@ -3,7 +3,7 @@
 > 제출 전 확인: `[작성 필요]`가 남아 있으면 안 됨. 5~7항은 실제로 겪은 사례와 근거만 적음.
 
 ## 1. 배포 주소
-[작성 필요]
+https://team-formation-app-thdbs.streamlit.app/
 
 ## 2. PRD와 구현 계획의 위치
 - `docs/PRD.md`
