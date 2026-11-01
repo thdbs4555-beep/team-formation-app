@@ -22,9 +22,9 @@
 | DB 일시정지 막기 | 어려운 해결 | GitHub Actions 예약 작업으로 매일 DB에 질의함 |
 
 ## 4. 쓴 모델 3개
-- 1차 `nvidia/nemotron-3.5-lightning:free`
-- 2차 `google/gemma-4-31b-it:free`
-- 3차 `nvidia/nemotron-3-ultra-550b-a55b:free`
+- 1차 `cohere/north-mini-code:free`
+- 2차 `nvidia/nemotron-3.5-lightning:free`
+- 3차 `google/gemma-4-31b-it:free`
 
 ## 5. 오픈라우터 AI 모델 호출 실패 사례
 [작성 필요: 실제 실패 내용, 화면 `img/파일.png`]

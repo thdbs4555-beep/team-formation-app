@@ -7,9 +7,9 @@ import time
 import requests
 
 MODELS = (
+    "cohere/north-mini-code:free",
     "nvidia/nemotron-3.5-lightning:free",
     "google/gemma-4-31b-it:free",
-    "nvidia/nemotron-3-ultra-550b-a55b:free",
 )
 MODEL_LIMIT_SEC = 120
 URL = "https://openrouter.ai/api/v1/chat/completions"

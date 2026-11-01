@@ -1,17 +1,35 @@
 """공고 부록의 연습용 시나리오와 규칙 검사. Supabase 없이 SQLite로 돌린다."""
 import json
+import os
 import sys
 from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from teamapp import ai
-from teamapp.db import SqliteDb
+from teamapp.db import PostgresDb, SqliteDb
 from teamapp.rules import Student, check_assignment, explain_no_solution, solve, team_problems
 from teamapp.service import Service, parse_roster
+
+
+ADMIN_PASSWORD = "test-admin"
+SHARED_DB = None
+
+
+def make_db():
+    """RUN_PG=1이면 `.env`의 실제 DB를 쓴다. 이때 tf_ 테이블의 내용은 지워진다."""
+    global ADMIN_PASSWORD, SHARED_DB
+    if not os.environ.get("RUN_PG"):
+        return SqliteDb()
+    if SHARED_DB is None:
+        load_dotenv(ROOT / ".env")
+        ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
+        SHARED_DB = PostgresDb(os.environ["DATABASE_URL"])
+    return SHARED_DB
 
 
 def fails(model, prompt, key):
@@ -20,8 +38,8 @@ def fails(model, prompt, key):
 
 class Game:
     def __init__(self, csv_name, team_count):
-        self.s = Service(SqliteDb())
-        self.s.ensure_admin("test-admin")
+        self.s = Service(make_db())
+        self.s.ensure_admin(ADMIN_PASSWORD)
         raw = (ROOT / "data" / csv_name).read_bytes()
         assert self.s.start(raw, team_count).startswith("승인")
         self.ids = {s.student_no: s.id for s in self.s.snapshot().students.values()}
@@ -198,7 +216,7 @@ def test_wrong_password_and_hash():
     g = Game("쉬움.csv", 3)
     assert g.s.login("2026101", "wrong") is None
     assert g.s.login("2026101", "1234")["name"].startswith("학생1")
-    assert g.s.login("admin", "test-admin")["is_admin"]
+    assert g.s.login("admin", ADMIN_PASSWORD)["is_admin"]
     with g.s.db.tx() as c:
         assert c.one("select password_hash from tf_students where student_no = '2026101'")[
             "password_hash"].startswith("$2")
@@ -212,7 +230,7 @@ def test_restart_keeps_admin_and_clears_state():
     assert g.s.start(raw, 4).startswith("승인")
     state = g.s.snapshot()
     assert not state.closed and len(state.teams) == 4 and not any(state.teams.values())
-    assert g.s.login("admin", "test-admin")
+    assert g.s.login("admin", ADMIN_PASSWORD)
 
 
 def test_roster_format():
