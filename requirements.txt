@@ -1,0 +1,6 @@
+streamlit==1.66.1
+psycopg[binary]==3.3.6
+psycopg-pool==3.3.3
+bcrypt==5.0.0
+requests==2.34.2
+python-dotenv==1.2.4

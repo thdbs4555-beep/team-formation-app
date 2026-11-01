@@ -1,0 +1,21 @@
+name: keep-db-alive
+
+# Supabase 무료 프로젝트가 일시정지되지 않도록 매일 DB에 질의한다.
+on:
+  schedule:
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "psycopg[binary]==3.3.6"
+      - name: Query the database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          python -c "import os, psycopg; c = psycopg.connect(os.environ['DATABASE_URL'], prepare_threshold=None); print(c.execute('select count(*) from tf_teams').fetchone()[0], 'teams')"

@@ -1,0 +1,4 @@
+[client]
+# 오류 화면에 DB 주소 같은 값이 나오지 않게 한다.
+showErrorDetails = "none"
+toolbarMode = "minimal"
