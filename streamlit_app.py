@@ -155,7 +155,7 @@ def admin_panel(service, state):
         with st.expander("AI 호출 기록"):
             for log in logs:
                 detail = f" - {log['detail']}" if log["detail"] else ""
-                st.write(f"{log['attempt']}차 {log['model']}: {log['outcome']} ({log['elapsed_sec']}초){detail}")
+                st.write(f"{log['attempt']}차 `{log['model']}`: {log['outcome']} ({log['elapsed_sec']}초){detail}")
 
 
 @st.fragment(run_every="5s")
